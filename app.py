@@ -29,17 +29,19 @@ def euclidean_distance(user, animal):
     # Para raça (1 se coincidir, 0 se não coincidir)
     breed_similarity = 1 if user['specificBreed'] == animal.get('breed', '') else 0
     
-    # Para idade: verificar se é numérico antes de tentar converter
+    # Para idade: lidar com o caso de 'Ambos' ou idade numérica, removendo texto como 'anos'
     user_age_preference = 0
     if user.get('preferred_age') and user.get('preferred_age').isdigit():
         user_age_preference = int(user.get('preferred_age'))
     
+    animal_age_str = animal.get('age', '0')  # Pegue a idade como string, ou '0' se estiver ausente
     animal_age = 0
+    
     try:
-        animal_age = int(animal.get('age', 0))
+        # Tente extrair apenas os números da idade
+        animal_age = int(''.join(filter(str.isdigit, animal_age_str)))
     except ValueError:
-        # Caso a idade do animal não seja um número, definir como 0 ou outro valor padrão
-        print(f"Valor de idade inválido para o animal {animal.get('name', 'desconhecido')}: {animal.get('age')}")
+        print(f"Valor de idade inválido para o animal {animal.get('name', 'sem nome')}: {animal_age_str}")
     
     age_difference = abs(user_age_preference - animal_age)
 
@@ -49,6 +51,7 @@ def euclidean_distance(user, animal):
     # Combinar todos os fatores em uma distância Euclidiana
     distance = math.sqrt((1 - breed_similarity)**2 + (age_difference)**2 + (1 - city_similarity)**2)
     return distance
+
 
 
 
