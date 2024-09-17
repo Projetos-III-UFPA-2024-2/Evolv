@@ -1,4 +1,3 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/animal.dart';
@@ -18,6 +17,8 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('iPet - Adoção de Animais'),
+        backgroundColor: Colors.deepPurple, // AppBar roxo
+        centerTitle: true,
       ),
       body: StreamBuilder<List<Animal>>(
         stream: _getAnimals(),
@@ -29,24 +30,34 @@ class HomeScreen extends StatelessWidget {
             return Center(child: Text('Erro ao carregar animais'));
           }
           final animals = snapshot.data ?? [];
-          return ListView.builder(
-            itemCount: animals.length,
-            itemBuilder: (context, index) {
-              final animal = animals[index];
-              return AnimalCard(
-                animal: animal,
-                onLike: () {
-                  // Lógica para curtir
-                },
-                onAdopt: () {
-                  // Lógica para adotar
-                },
-                onDislike: () {
-                  // Lógica para passar
-                },
-              );
-            },
-          );
+          return animals.isEmpty
+              ? Center(
+                  child: Text(
+                    'Nenhum animal disponível para adoção',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: animals.length,
+                  itemBuilder: (context, index) {
+                    final animal = animals[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: AnimalCard(
+                        animal: animal,
+                        onLike: () {
+                          // Lógica para curtir
+                        },
+                        onAdopt: () {
+                          // Lógica para adotar
+                        },
+                        onDislike: () {
+                          // Lógica para passar
+                        },
+                      ),
+                    );
+                  },
+                );
         },
       ),
     );

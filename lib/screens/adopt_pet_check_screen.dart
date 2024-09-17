@@ -48,63 +48,110 @@ class _AdoptPetCheckScreenState extends State<AdoptPetCheckScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Adote um Pet'),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple.shade700, // Cor roxa para o AppBar
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (_hasFilledForm)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Você já preencheu o formulário. Deseja preenchê-lo novamente ou pular para a adoção de pets?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PreAdoptionFormScreen()),
-                            );
-                          },
-                          child: Text('Preencher Formulário Novamente'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AdoptPetScreen(
-                                  city: _city!,
-                                  neighborhood: _neighborhood!,
-                                ),
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _hasFilledForm
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors
+                                .deepPurple.shade700, // Icone com cor roxa
+                            size: 80,
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Você já preencheu o formulário. Deseja preenchê-lo novamente ou pular para a adoção de pets?',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800], // Texto com cor suave
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PreAdoptionFormScreen()),
+                              );
+                            },
+                            icon: Icon(Icons.edit),
+                            label: Text('Preencher Formulário Novamente'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors
+                                  .deepPurple.shade700, // Botão roxo escuro
+                              foregroundColor: Colors.white,
+                              minimumSize:
+                                  Size(double.infinity, 50), // Largura total
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                            );
-                          },
-                          child: Text('Pular para Adoção'),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdoptPetScreen(
+                                    city: _city!,
+                                    neighborhood: _neighborhood!,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.pets),
+                            label: Text('Pular para Adoção'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple
+                                  .shade700, // Tom mais claro de roxo
+                              foregroundColor: Colors.white,
+                              minimumSize:
+                                  Size(double.infinity, 50), // Largura total
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PreAdoptionFormScreen()),
+                          );
+                        },
+                        icon: Icon(Icons.assignment),
+                        label: Text('Preencher Formulário de Pré-Adoção'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.deepPurple.shade700, // Botão com cor roxa
+                          foregroundColor: Colors.white,
+                          minimumSize:
+                              Size(double.infinity, 50), // Largura total
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
-                      ],
-                    ),
-                  )
-                else
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PreAdoptionFormScreen()),
-                      );
-                    },
-                    child: Text('Preencher Formulário de Pré-Adoção'),
-                  ),
-              ],
+                      ),
+              ),
             ),
     );
   }

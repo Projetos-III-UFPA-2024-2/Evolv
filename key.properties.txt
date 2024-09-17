@@ -1,0 +1,4 @@
+storePassword=88776143          # Senha do Keystore
+keyPassword=88776143            # Senha da chave
+keyAlias=pet-key                # Alias da chave
+storeFile=C:/aaaaaaa/projetoipet/pet.jks  # Caminho completo do arquivo .jks

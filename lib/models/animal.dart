@@ -12,6 +12,7 @@ class Animal {
   String ownerId;
   String city;
   String neighborhood;
+  String gender; // Novo campo: Macho ou Fêmea
 
   Animal({
     required this.id,
@@ -25,11 +26,29 @@ class Animal {
     required this.ownerId,
     required this.city,
     required this.neighborhood,
+    required this.gender, // Inicializando o campo gender
   });
+
+  factory Animal.fromMap(Map<String, dynamic> map) {
+    return Animal(
+      id: map['id'] ?? '',
+      name: map['name'] ?? 'Sem nome',
+      breed: map['breed'] ?? 'Desconhecido',
+      age: map['age'] ?? 'Desconhecida',
+      hasDisability: map['hasDisability'] == true,
+      isVaccinated: map['isVaccinated'] == true,
+      isNeutered: map['isNeutered'] == true,
+      photoUrl: map['photoUrl'] ?? '',
+      ownerId: map['ownerId'] ?? '',
+      city: map['city'] ?? 'Desconhecida',
+      neighborhood: map['neighborhood'] ?? 'Desconhecido',
+      gender: '',
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      // 'id': id, // Opcional: remova se o ID não for necessário dentro do documento
       'name': name,
       'breed': breed,
       'age': age,
@@ -40,22 +59,7 @@ class Animal {
       'ownerId': ownerId,
       'city': city,
       'neighborhood': neighborhood,
+      'gender': gender, // Incluindo gender no Map
     };
-  }
-
-  factory Animal.fromMap(Map<String, dynamic> map) {
-    return Animal(
-      id: map['id'],
-      name: map['name'],
-      breed: map['breed'],
-      age: map['age'],
-      hasDisability: map['hasDisability'],
-      isVaccinated: map['isVaccinated'],
-      isNeutered: map['isNeutered'],
-      photoUrl: map['photoUrl'],
-      ownerId: map['ownerId'],
-      city: map['city'],
-      neighborhood: map['neighborhood'],
-    );
   }
 }

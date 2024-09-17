@@ -1,12 +1,21 @@
 ipet.adocao.com.projetoipet
+anim fragment_fast_out_extra_slow_in
+animator fragment_close_enter
+animator fragment_close_exit
+animator fragment_fade_enter
+animator fragment_fade_exit
+animator fragment_open_enter
+animator fragment_open_exit
 attr activityAction
 attr activityName
 attr alpha
 attr alwaysExpand
+attr animationBackgroundColor
 attr buttonSize
 attr circleCrop
 attr clearTop
 attr colorScheme
+attr finishPrimaryWithPlaceholder
 attr finishPrimaryWithSecondary
 attr finishSecondaryWithPrimary
 attr font
@@ -32,9 +41,14 @@ attr secondaryActivityAction
 attr secondaryActivityName
 attr shortcutMatchRequired
 attr splitLayoutDirection
-attr splitMinSmallestWidth
-attr splitMinWidth
+attr splitMaxAspectRatioInLandscape
+attr splitMaxAspectRatioInPortrait
+attr splitMinHeightDp
+attr splitMinSmallestWidthDp
+attr splitMinWidthDp
 attr splitRatio
+attr stickyPlaceholder
+attr tag
 attr ttcIndex
 color androidx_core_ripple_material_light
 color androidx_core_secondary_text_default_material_light
@@ -88,6 +102,7 @@ dimen subtitle_corner_radius
 dimen subtitle_outline_width
 dimen subtitle_shadow_offset
 dimen subtitle_shadow_radius
+drawable background
 drawable common_full_open_on_phone
 drawable common_google_signin_btn_icon_dark
 drawable common_google_signin_btn_icon_dark_focused
@@ -130,6 +145,7 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable splash
 drawable toast_bg
 id accessibility_action_clickable_span
 id accessibility_custom_action_0
@@ -170,12 +186,17 @@ id action_divider
 id action_image
 id action_text
 id actions
+id adjacent
 id adjust_height
 id adjust_width
+id always
+id alwaysAllow
+id alwaysDisallow
 id androidx_window_activity_scope
 id async
 id auto
 id blocking
+id bottomToTop
 id browser_actions_header_text
 id browser_actions_menu_item_icon
 id browser_actions_menu_item_text
@@ -188,6 +209,7 @@ id dialog_button
 id edit_text_id
 id end_padder
 id forever
+id fragment_container_view_tag
 id hide_ime_id
 id icon
 id icon_group
@@ -200,6 +222,7 @@ id line3
 id locale
 id ltr
 id media_actions
+id never
 id none
 id normal
 id notification_background
@@ -209,6 +232,7 @@ id report_drawn
 id right_icon
 id right_side
 id rtl
+id special_effects_controller_view_tag
 id standard
 id status_bar_latest_event_content
 id tag_accessibility_actions
@@ -228,10 +252,12 @@ id text
 id text2
 id time
 id title
+id topToBottom
 id view_tree_lifecycle_owner
 id view_tree_on_back_pressed_dispatcher_owner
 id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
+id visible_removing_fragment_view_tag
 id wide
 integer cancel_button_image_alpha
 integer google_play_services_version
@@ -312,17 +338,20 @@ style TextAppearance_Compat_Notification_Title_Media
 style Widget_Compat_NotificationActionContainer
 style Widget_Compat_NotificationActionText
 styleable ActivityFilter activityAction activityName
-styleable ActivityRule alwaysExpand
+styleable ActivityRule alwaysExpand tag
 styleable Capability queryPatterns shortcutMatchRequired
 styleable ColorStateListItem android_color android_alpha android_lStar alpha lStar
 styleable FontFamily fontProviderAuthority fontProviderCerts fontProviderFetchStrategy fontProviderFetchTimeout fontProviderPackage fontProviderQuery fontProviderSystemFontFamily
 styleable FontFamilyFont android_font android_fontWeight android_fontStyle android_ttcIndex android_fontVariationSettings font fontStyle fontVariationSettings fontWeight ttcIndex
+styleable Fragment android_name android_id android_tag
+styleable FragmentContainerView android_name android_tag
 styleable GradientColor android_startColor android_endColor android_type android_centerX android_centerY android_gradientRadius android_tileMode android_centerColor android_startX android_startY android_endX android_endY
 styleable GradientColorItem android_color android_offset
 styleable LoadingImageView circleCrop imageAspectRatio imageAspectRatioAdjust
 styleable SignInButton buttonSize colorScheme scopeUris
 styleable SplitPairFilter primaryActivityName secondaryActivityAction secondaryActivityName
-styleable SplitPairRule clearTop finishPrimaryWithSecondary finishSecondaryWithPrimary splitLayoutDirection splitMinSmallestWidth splitMinWidth splitRatio
-styleable SplitPlaceholderRule placeholderActivityName splitLayoutDirection splitMinSmallestWidth splitMinWidth splitRatio
+styleable SplitPairRule animationBackgroundColor clearTop finishPrimaryWithSecondary finishSecondaryWithPrimary splitLayoutDirection splitMaxAspectRatioInLandscape splitMaxAspectRatioInPortrait splitMinHeightDp splitMinSmallestWidthDp splitMinWidthDp splitRatio tag
+styleable SplitPlaceholderRule animationBackgroundColor finishPrimaryWithPlaceholder placeholderActivityName splitLayoutDirection splitMaxAspectRatioInLandscape splitMaxAspectRatioInPortrait splitMinHeightDp splitMinSmallestWidthDp splitMinWidthDp splitRatio stickyPlaceholder tag
 xml flutter_image_picker_file_paths
 xml image_share_filepaths
+xml network_security_config

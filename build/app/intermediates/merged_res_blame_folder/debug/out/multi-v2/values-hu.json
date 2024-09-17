@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "ipet.adocao.com.projetoipet.app-mergeDebugResources-28:/values-hu/values-hu.xml",
+            "outputFile": "ipet.adocao.com.projetoipet.app-mergeDebugResources-33:/values-hu/values-hu.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\8a23a50f046a72ab321e149cef61a980\\transformed\\jetified-play-services-base-18.1.0\\res\\values-hu\\values.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\503afabe50ba029e64fbe6a70f120f2f\\transformed\\jetified-play-services-base-18.1.0\\res\\values-hu\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\10213c521e46d462c3e8df47818859ab\\transformed\\core-1.13.1\\res\\values-hu\\values-hu.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\6be828bfc761ec9853db404755774cad\\transformed\\core-1.13.1\\res\\values-hu\\values-hu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -38,7 +38,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\e76aed36a087f5f71489bfa0e357771e\\transformed\\jetified-play-services-basement-18.3.0\\res\\values-hu\\values.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\2f5e70617d4d48a056d7cd53659417fe\\transformed\\jetified-play-services-basement-18.3.0\\res\\values-hu\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
@@ -55,7 +55,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\41f44ee4d75bd62ccf77f2bb4d70f6c0\\transformed\\browser-1.4.0\\res\\values-hu\\values-hu.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\de334d6e5cfc91fc5ba85a3b8a6d67bc\\transformed\\browser-1.4.0\\res\\values-hu\\values-hu.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

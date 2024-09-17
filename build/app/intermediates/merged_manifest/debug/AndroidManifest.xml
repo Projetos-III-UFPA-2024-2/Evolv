@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ipet.adocao.com.projetoipet"
-    android:versionCode="1"
+    android:versionCode="2"
     android:versionName="1.0.0" >
 
     <uses-sdk
@@ -34,10 +34,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions options for the `notification` group -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- Required by older versions of Google Play services to create IID tokens -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
@@ -52,7 +49,8 @@
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="projetoipet" >
+        android:label="projetoipet"
+        android:networkSecurityConfig="@xml/network_security_config" >
         <activity
             android:name="ipet.adocao.com.projetoipet.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -165,24 +163,6 @@
             android:authorities="ipet.adocao.com.projetoipet.flutterfirebasemessaginginitprovider"
             android:exported="false"
             android:initOrder="99" />
-
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
-            android:exported="false" />
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
-            android:exported="false" />
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
-
         <provider
             android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
             android:authorities="ipet.adocao.com.projetoipet.flutter.image_provider"
@@ -273,6 +253,17 @@
             android:directBootAware="true"
             android:exported="false"
             android:initOrder="100" />
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="ipet.adocao.com.projetoipet.androidx-startup"
+            android:exported="false" >
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+                android:value="androidx.startup" />
+        </provider>
 
         <uses-library
             android:name="androidx.window.extensions"
@@ -289,15 +280,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="ipet.adocao.com.projetoipet.androidx-startup"
-            android:exported="false" >
-            <meta-data
-                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-                android:value="androidx.startup" />
-        </provider>
 
         <receiver
             android:name="androidx.profileinstaller.ProfileInstallReceiver"

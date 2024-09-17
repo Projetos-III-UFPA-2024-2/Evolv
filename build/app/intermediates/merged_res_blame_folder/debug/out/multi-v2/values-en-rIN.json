@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "ipet.adocao.com.projetoipet.app-mergeDebugResources-28:/values-en-rIN/values-en-rIN.xml",
+            "outputFile": "ipet.adocao.com.projetoipet.app-mergeDebugResources-33:/values-en-rIN/values-en-rIN.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\10213c521e46d462c3e8df47818859ab\\transformed\\core-1.13.1\\res\\values-en-rIN\\values-en-rIN.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\6be828bfc761ec9853db404755774cad\\transformed\\core-1.13.1\\res\\values-en-rIN\\values-en-rIN.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Danilo\\.gradle\\caches\\transforms-3\\41f44ee4d75bd62ccf77f2bb4d70f6c0\\transformed\\browser-1.4.0\\res\\values-en-rIN\\values-en-rIN.xml",
+                    "source": "C:\\Users\\DELL\\.gradle\\caches\\transforms-3\\de334d6e5cfc91fc5ba85a3b8a6d67bc\\transformed\\browser-1.4.0\\res\\values-en-rIN\\values-en-rIN.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
