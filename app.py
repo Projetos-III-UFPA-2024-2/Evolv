@@ -25,17 +25,22 @@ if firebase_cred_json:
 else:
     print("Erro: As credenciais do Firebase não foram encontradas na variável de ambiente!")
 
-# Função para calcular a distância Euclidiana entre o usuário e os animais
 def euclidean_distance(user, animal):
     # Para raça (1 se coincidir, 0 se não coincidir)
     breed_similarity = 1 if user['specificBreed'] == animal.get('breed', '') else 0
     
-    # Para idade: lidar com o caso de 'Ambos' ou idade numérica
+    # Para idade: verificar se é numérico antes de tentar converter
     user_age_preference = 0
     if user.get('preferred_age') and user.get('preferred_age').isdigit():
         user_age_preference = int(user.get('preferred_age'))
     
-    animal_age = int(animal.get('age', 0)) if animal.get('age') else 0
+    animal_age = 0
+    try:
+        animal_age = int(animal.get('age', 0))
+    except ValueError:
+        # Caso a idade do animal não seja um número, definir como 0 ou outro valor padrão
+        print(f"Valor de idade inválido para o animal {animal.get('name', 'desconhecido')}: {animal.get('age')}")
+    
     age_difference = abs(user_age_preference - animal_age)
 
     # Para cidade (1 se coincidir, 0 se não coincidir)
@@ -44,6 +49,7 @@ def euclidean_distance(user, animal):
     # Combinar todos os fatores em uma distância Euclidiana
     distance = math.sqrt((1 - breed_similarity)**2 + (age_difference)**2 + (1 - city_similarity)**2)
     return distance
+
 
 
 @app.route('/recommend', methods=['POST'])
