@@ -3,14 +3,27 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from flask_cors import CORS
 import math
-
+import os
+import json
+import firebase_admin
+from firebase_admin import credentials, firestore
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import math
 app = Flask(__name__)
 CORS(app)  # Para permitir requisições de diferentes origens (CORS)
 
-# Inicialize o Firebase Admin SDK
-cred = credentials.Certificate('C:/aaaaaaa/projetoipet/android/app/ad-ipet-firebase-adminsdk-ndii9-19c533fbe2.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+# Carregar as credenciais do Firebase a partir da variável de ambiente
+firebase_cred_json = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+
+if firebase_cred_json:
+    # Converter o JSON string em um dicionário Python
+    cred_data = json.loads(firebase_cred_json)
+    cred = credentials.Certificate(cred_data)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+else:
+    print("Erro: As credenciais do Firebase não foram encontradas na variável de ambiente!")
 
 # Função para calcular a distância Euclidiana entre o usuário e os animais
 def euclidean_distance(user, animal):
@@ -82,5 +95,5 @@ def recommend():
     return jsonify(top_recommendations)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(debug=True)
 

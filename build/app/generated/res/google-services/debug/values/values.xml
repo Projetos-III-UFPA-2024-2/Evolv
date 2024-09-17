@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="gcm_defaultSenderId" translatable="false">284363264618</string>
-    <string name="google_api_key" translatable="false">AIzaSyD1Z4iu_E5hxFb1_wzmVxf1JwVvlEGiWkk</string>
-    <string name="google_app_id" translatable="false">1:284363264618:android:20948f56cf64138cc57013</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD1Z4iu_E5hxFb1_wzmVxf1JwVvlEGiWkk</string>
-    <string name="google_storage_bucket" translatable="false">ad-ipet.appspot.com</string>
-    <string name="project_id" translatable="false">ad-ipet</string>
-</resources>
