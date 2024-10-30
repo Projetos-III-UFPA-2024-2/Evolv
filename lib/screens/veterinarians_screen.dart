@@ -18,6 +18,7 @@ class _VeterinariansScreenState extends State<VeterinariansScreen> {
   final _neighborhoodController = TextEditingController();
   final _clinicAddressController = TextEditingController();
   final _workingHoursController = TextEditingController();
+  final _crmvController = TextEditingController(); // Novo campo CRMV
   bool _homeService = false;
 
   String _contactMethod = 'Telefone'; // Define telefone como padrão
@@ -49,6 +50,8 @@ class _VeterinariansScreenState extends State<VeterinariansScreen> {
                   Icons.home_work),
               _buildTextField(_workingHoursController, 'Horário de Trabalho',
                   Icons.schedule),
+              _buildTextField(_crmvController, 'CRMV',
+                  Icons.credit_card), // Adiciona o campo CRMV
               SwitchListTile(
                 title: Text('Atende a Domicílio'),
                 activeColor: Colors.purple,
@@ -137,30 +140,47 @@ class _VeterinariansScreenState extends State<VeterinariansScreen> {
     if (_formKey.currentState!.validate()) {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final veterinarian = Veterinarian(
-          id: '', // Gerado pelo Firebase
-          ownerId: user.uid,
-          name: _nameController.text,
-          contactMethod: _contactMethod,
-          contactInfo: _contactInfoController.text,
-          specialization: _specializationController.text,
-          experience: _experienceController.text,
-          city: _cityController.text,
-          neighborhood: _neighborhoodController.text,
-          homeService: _homeService,
-          clinicAddress: _clinicAddressController.text,
-          workingHours: _workingHoursController.text,
-        );
-
-        await FirebaseFirestore.instance
+        // Verificar se o usuário já possui um perfil de veterinário
+        final querySnapshot = await FirebaseFirestore.instance
             .collection('veterinarians')
-            .add(veterinarian.toMap());
+            .where('ownerId', isEqualTo: user.uid)
+            .get();
 
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Cadastro realizado com sucesso!'),
-        ));
+        // Se já existir um perfil, exibe uma mensagem e não cria outro
+        if (querySnapshot.docs.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text('Você já possui um perfil de veterinário cadastrado.'),
+            backgroundColor: Colors.red, // Cor de alerta para o erro
+          ));
+        } else {
+          // Criar novo perfil se não houver
+          final veterinarian = Veterinarian(
+            id: '', // Gerado pelo Firebase
+            ownerId: user.uid,
+            name: _nameController.text,
+            contactMethod: _contactMethod,
+            contactInfo: _contactInfoController.text,
+            specialization: _specializationController.text,
+            experience: _experienceController.text,
+            city: _cityController.text,
+            neighborhood: _neighborhoodController.text,
+            homeService: _homeService,
+            clinicAddress: _clinicAddressController.text,
+            workingHours: _workingHoursController.text,
+            crmv: _crmvController.text, // Adiciona o valor do CRMV
+          );
 
-        Navigator.pop(context);
+          await FirebaseFirestore.instance
+              .collection('veterinarians')
+              .add(veterinarian.toMap());
+
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Cadastro realizado com sucesso!'),
+          ));
+
+          Navigator.pop(context);
+        }
       }
     }
   }

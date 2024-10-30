@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DonationScreen extends StatelessWidget {
   final String pixKey = 'adocaoipet@gmail.com';
+  final String instagramUrl =
+      'https://www.instagram.com/_i.pets_?igsh=aHIzbmJpOGYxZXB0';
+
+  Future<void> _launchInstagram() async {
+    if (await canLaunch(instagramUrl)) {
+      await launch(instagramUrl);
+    } else {
+      throw 'Não foi possível abrir o Instagram';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +88,24 @@ class DonationScreen extends StatelessWidget {
                     },
                   ),
                 ],
+              ),
+            ),
+            SizedBox(height: 30),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: _launchInstagram,
+                icon: Icon(Icons.link, color: Colors.white),
+                label: Text(
+                  'Visite nosso Instagram',
+                  style: TextStyle(
+                      color: Colors.white), // Cor do texto definida como branca
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple.shade700,
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+                  textStyle:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             SizedBox(height: 30),

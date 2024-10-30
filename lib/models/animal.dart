@@ -42,7 +42,8 @@ class Animal {
       ownerId: map['ownerId'] ?? '',
       city: map['city'] ?? 'Desconhecida',
       neighborhood: map['neighborhood'] ?? 'Desconhecido',
-      gender: '',
+      gender: map['gender'] ??
+          'Desconhecido', // Corrigido para pegar o valor do map
     );
   }
 

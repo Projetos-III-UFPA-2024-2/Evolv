@@ -133,6 +133,7 @@ class _VeterinariansSearchScreenState extends State<VeterinariansSearchScreen> {
                   _buildInfoRow(Icons.location_city, 'Cidade: ${vet.city}'),
                   _buildInfoRow(Icons.near_me, 'Bairro: ${vet.neighborhood}'),
                   _buildInfoRow(Icons.phone, 'Contato: ${vet.contactInfo}'),
+                  _buildInfoRow(Icons.credit_card, 'CRMV: ${vet.crmv}'),
                   _buildInfoRow(
                       Icons.work, 'Especialização: ${vet.specialization}'),
                   _buildInfoRow(

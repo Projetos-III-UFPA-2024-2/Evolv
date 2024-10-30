@@ -7,6 +7,7 @@ import 'liked_pets_screen.dart';
 import 'interested_users_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class AdoptPetScreen extends StatefulWidget {
   final String city;
@@ -75,7 +76,8 @@ class _AdoptPetScreenState extends State<AdoptPetScreen> {
   Future<List<Animal>> fetchRecommendations(
       String userId, String city, String neighborhood) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/recommend'),
+      Uri.parse(
+          'http://ipet-env.eba-ummbhmx6.us-east-1.elasticbeanstalk.com/recommend'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'userId': userId,
@@ -323,10 +325,10 @@ class _AdoptPetScreenState extends State<AdoptPetScreen> {
                     Expanded(
                       child: AnimalCard(
                         animal: animals[currentIndex],
-                        onLike: _likeAnimal,
-                        onNext: _nextAnimal,
-                        onAdopt: _wantToAdoptAnimal,
-                        onDislike: _nextAnimal,
+                        //onLike: _likeAnimal,
+                        //onNext: _nextAnimal,
+                        //onAdopt: _wantToAdoptAnimal,
+                        //onDislike: _nextAnimal,
                       ),
                     ),
                     Padding(

@@ -23,6 +23,7 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
   final _neighborhoodController = TextEditingController();
   final _clinicAddressController = TextEditingController();
   final _workingHoursController = TextEditingController();
+  final _crmvController = TextEditingController(); // Novo controlador para CRMV
   bool _homeService = false;
 
   @override
@@ -52,6 +53,7 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
           _neighborhoodController.text = _veterinarian!.neighborhood;
           _clinicAddressController.text = _veterinarian!.clinicAddress;
           _workingHoursController.text = _veterinarian!.workingHours;
+          _crmvController.text = _veterinarian!.crmv; // Carrega o CRMV
           _homeService = _veterinarian!.homeService;
         });
       }
@@ -70,6 +72,7 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
         clinicAddress: _clinicAddressController.text,
         workingHours: _workingHoursController.text,
         homeService: _homeService,
+        crmv: _crmvController.text, // Captura o valor atualizado do CRMV
       );
 
       await FirebaseFirestore.instance
@@ -90,11 +93,30 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
 
   Future<void> _deleteProfile() async {
     if (_docId != null) {
-      await FirebaseFirestore.instance
-          .collection('veterinarians')
-          .doc(_docId!)
-          .delete();
-      Navigator.pop(context);
+      try {
+        await FirebaseFirestore.instance
+            .collection('veterinarians')
+            .doc(_docId!)
+            .delete();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Perfil deletado com sucesso!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Retorna para a tela anterior após a exclusão
+        Navigator.pop(context);
+      } catch (e) {
+        // Em caso de erro, exibe uma mensagem
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao deletar perfil. Tente novamente.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -158,6 +180,8 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
               _veterinarian!.workingHours),
           _buildProfileCard(Icons.home, 'Atende a Domicílio',
               _veterinarian!.homeService ? 'Sim' : 'Não'),
+          _buildProfileCard(
+              Icons.credit_card, 'CRMV', _veterinarian!.crmv), // Exibe o CRMV
         ],
       ),
     );
@@ -190,6 +214,8 @@ class _VeterinarianProfileScreenState extends State<VeterinarianProfileScreen> {
             _clinicAddressController, 'Endereço da Clínica', Icons.home_work),
         _buildTextField(
             _workingHoursController, 'Horário de Trabalho', Icons.schedule),
+        _buildTextField(_crmvController, 'CRMV',
+            Icons.credit_card), // Novo campo CRMV no formulário de edição
         SwitchListTile(
           title: Text('Atende a Domicílio'),
           activeColor: Colors.purple,

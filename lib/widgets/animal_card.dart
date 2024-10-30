@@ -3,17 +3,17 @@ import '../models/animal.dart';
 
 class AnimalCard extends StatelessWidget {
   final Animal animal;
-  final VoidCallback onLike;
-  final VoidCallback onNext;
-  final VoidCallback onAdopt;
-  final VoidCallback onDislike;
+  // final VoidCallback onLike; // Não será usado
+  // final VoidCallback onNext; // Não será usado
+  // final VoidCallback onAdopt; // Não será usado
+  // final VoidCallback onDislike; // Não será usado
 
   AnimalCard({
     required this.animal,
-    required this.onLike,
-    required this.onNext,
-    required this.onAdopt,
-    required this.onDislike,
+    // required this.onLike, // Não será usado
+    // required this.onNext, // Não será usado
+    // required this.onAdopt, // Não será usado
+    // required this.onDislike, // Não será usado
   });
 
   @override
@@ -46,12 +46,13 @@ class AnimalCard extends StatelessWidget {
             Text('Cidade: ${animal.city}', textAlign: TextAlign.center),
             Text('Bairro: ${animal.neighborhood}', textAlign: TextAlign.center),
             SizedBox(height: 20),
-            // Adicionar os botões aqui
+            // Comentando a seção de botões
+            /*
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: onNext,
+                  onPressed: onNext, // Comentado
                   icon: Icon(Icons.skip_next, color: Colors.white),
                   label: Text('Próximo'),
                   style: ElevatedButton.styleFrom(
@@ -64,7 +65,7 @@ class AnimalCard extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: onLike,
+                  onPressed: onLike, // Comentado
                   icon: Icon(Icons.thumb_up, color: Colors.white),
                   label: Text('Curtir'),
                   style: ElevatedButton.styleFrom(
@@ -77,7 +78,7 @@ class AnimalCard extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: onAdopt,
+                  onPressed: onAdopt, // Comentado
                   icon: Icon(Icons.pets, color: Colors.white),
                   label: Text('Adotar'),
                   style: ElevatedButton.styleFrom(
@@ -91,6 +92,7 @@ class AnimalCard extends StatelessWidget {
                 ),
               ],
             ),
+            */
           ],
         ),
       ),

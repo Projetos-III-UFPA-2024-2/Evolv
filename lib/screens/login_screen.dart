@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'signup_screen.dart';
 import 'main_screen.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,6 +14,36 @@ class _LoginScreenState extends State<LoginScreen> {
   String email = '';
   String password = '';
   bool _isLoading = false;
+  BannerAd? _bannerAd; // Adiciona o banner ad
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd(); // Carrega o anúncio quando a tela for inicializada
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose(); // Limpa o banner ad quando a tela for descartada
+    super.dispose();
+  }
+
+  // Função para carregar o banner
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId:
+          'ca-app-pub-4363860954470928/1828728272', // Substitua pelo seu Ad Unit ID
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) => setState(() {}),
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('BannerAd falhou ao carregar: $error');
+        },
+      ),
+    )..load();
+  }
 
   // Função para recuperar senha
   void _resetPassword() async {
@@ -59,6 +90,15 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                if (_bannerAd != null)
+                  Container(
+                    alignment: Alignment.center,
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child:
+                        AdWidget(ad: _bannerAd!), // Exibe o banner de anúncio
+                  ),
+                SizedBox(height: 20),
                 Icon(
                   Icons.login,
                   size: 100,
@@ -88,8 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Senha',
                     prefixIcon: Icon(Icons.lock, color: Colors.deepPurple),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
+                        borderRadius: BorderRadius.circular(12.0)),
                   ),
                 ),
                 SizedBox(height: 10),

@@ -1,33 +1,55 @@
-from flask import Flask, request, jsonify
-import firebase_admin
-from firebase_admin import credentials, firestore
-from flask_cors import CORS
-import math
 import os
-import json
+from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
-from flask import Flask, request, jsonify
 from flask_cors import CORS
 import math
-app = Flask(__name__)
-CORS(app)  # Para permitir requisições de diferentes origens (CORS)
 
-# Carregar as credenciais do Firebase a partir da variável de ambiente
-firebase_cred_json = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+application = Flask(__name__)
+CORS(application)  # Para permitir requisições de diferentes origens (CORS)
 
-if firebase_cred_json:
-    # Converter o JSON string em um dicionário Python
-    cred_data = json.loads(firebase_cred_json)
-    cred = credentials.Certificate(cred_data)
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-else:
-    print("Erro: As credenciais do Firebase não foram encontradas na variável de ambiente!")
+# Inicialize o Firebase Admin SDK
+cred_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')  # Obtém o caminho do arquivo de credenciais
+cred = credentials.Certificate(cred_path)  # Cria o objeto de credenciais
 
+<<<<<<< HEAD
+=======
+firebase_admin.initialize_app(cred)  # Inicializa o Firebase Admin SDK com as credenciais
+db = firestore.client()
+
+# Função para calcular a idade preferida com base nas curtidas do usuário
+def get_preferred_age_from_likes(user_id):
+    # Obter as curtidas do usuário da coleção 'liked_pets'
+    likes_ref = db.collection('liked_pets').where('userId', '==', user_id)
+    liked_animals = likes_ref.stream()
+
+    # Extrair idades dos animais curtidos
+    ages = []
+    for like in liked_animals:
+        animal_id = like.get('petId')
+        animal_doc = db.collection('animals').document(animal_id).get()
+        if animal_doc.exists:
+            animal_data = animal_doc.to_dict()
+            age_str = animal_data.get('age', '0')
+            try:
+                # Extraindo o número da idade, por exemplo: '3 anos' -> 3
+                age = int(age_str.split()[0])
+                ages.append(age)
+            except ValueError:
+                continue
+
+    # Calcular a idade média dos animais curtidos, se houver curtidas
+    if ages:
+        average_age = sum(ages) / len(ages)
+        return average_age
+    return None  # Se o usuário não curtiu nenhum animal, não tem preferência de idade
+
+# Função para calcular a distância euclidiana
+>>>>>>> ae27dc5 (Atualizações no projeto iPet: correção de ícones, adição de telas de edição e splash e demais etapas do desenvolvimento)
 def euclidean_distance(user, animal):
-    # Para raça (1 se coincidir, 0 se não coincidir)
+    # Comparar a raça (1 se coincidir, 0 se não coincidir)
     breed_similarity = 1 if user['specificBreed'] == animal.get('breed', '') else 0
+<<<<<<< HEAD
     
     # Para idade: lidar com o caso de 'Ambos' ou idade numérica, removendo texto como 'anos'
     user_age_preference = 0
@@ -43,35 +65,52 @@ def euclidean_distance(user, animal):
     except ValueError:
         print(f"Valor de idade inválido para o animal {animal.get('name', 'sem nome')}: {animal_age_str}")
     
+=======
+
+    # Calcular a diferença de idade
+    user_age_preference = user.get('preferred_age', 0)  # Idade preferida do usuário
+    animal_age = 0
+    try:
+        animal_age = int(animal.get('age', '0').split()[0])  # Idade do animal
+    except ValueError:
+        print(f"Erro ao converter idade para o animal {animal.get('name', 'desconhecido')}")
+
+>>>>>>> ae27dc5 (Atualizações no projeto iPet: correção de ícones, adição de telas de edição e splash e demais etapas do desenvolvimento)
     age_difference = abs(user_age_preference - animal_age)
 
-    # Para cidade (1 se coincidir, 0 se não coincidir)
+    # Comparar a cidade (1 se coincidir, 0 se não coincidir)
     city_similarity = 1 if user['city'] == animal.get('city', '') else 0
 
-    # Combinar todos os fatores em uma distância Euclidiana
+    # Calcular a distância euclidiana com base nas similaridades
     distance = math.sqrt((1 - breed_similarity)**2 + (age_difference)**2 + (1 - city_similarity)**2)
     return distance
 
+<<<<<<< HEAD
 
 
 
 @app.route('/recommend', methods=['POST'])
+=======
+# Endpoint para recomendar animais
+@application.route('/recommend', methods=['POST'])
+>>>>>>> ae27dc5 (Atualizações no projeto iPet: correção de ícones, adição de telas de edição e splash e demais etapas do desenvolvimento)
 def recommend():
     # Receber dados do usuário da requisição
     data = request.json
     user_id = data.get('userId')
     city = data.get('city')
-    neighborhood = data.get('neighborhood')
 
     # Obter dados do adotante (usuário) do Firestore
     adopter_doc = db.collection('form_responses').document(user_id).get()
     adopter_data = adopter_doc.to_dict() if adopter_doc.exists else {}
 
-    # Preferências do usuário
-    specific_breed = adopter_data.get('specificBreed', None)
-    preferred_age = adopter_data.get('petPreference', None)  # Se preferir uma idade específica de animal
+    # Obter a idade preferida com base nas curtidas do usuário
+    preferred_age = get_preferred_age_from_likes(user_id)
 
-    # Obter todos os animais da cidade especificada
+    # Obter a raça preferida do Firestore
+    specific_breed = adopter_data.get('specificBreed', None)
+
+    # Buscar animais na cidade especificada
     animals_ref = db.collection('animals')
     query = animals_ref.where('city', '==', city)
     animals = query.stream()
@@ -83,26 +122,25 @@ def recommend():
         animal = doc.to_dict()
         animal['id'] = doc.id
 
-        # Calcular a distância Euclidiana entre as preferências do usuário e as características do animal
+        # Preparar as preferências do usuário para comparação
         user_preferences = {
             'city': city,
             'specificBreed': specific_breed,
-            'preferred_age': preferred_age
+            'preferred_age': preferred_age  # Idade calculada com base nas curtidas
         }
-        distance = euclidean_distance(user_preferences, animal)
 
-        # Adicionar o animal e a distância calculada à lista de recomendações
+        # Calcular a distância euclidiana entre o animal e as preferências do usuário
+        distance = euclidean_distance(user_preferences, animal)
         recommendations.append((animal, distance))
 
     # Classificar os animais pela menor distância
     recommendations.sort(key=lambda x: x[1])
 
-    # Retornar os K animais mais próximos (por exemplo, os 5 mais próximos)
-    K = 5
+    # Retornar os K animais mais próximos (por exemplo, os 500 mais próximos)
+    K = 500
     top_recommendations = [rec[0] for rec in recommendations[:K]]
 
     return jsonify(top_recommendations)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    application.run(debug=True)

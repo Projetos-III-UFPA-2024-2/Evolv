@@ -11,6 +11,7 @@ class Veterinarian {
   bool homeService;
   String clinicAddress;
   String workingHours;
+  String crmv; // Novo campo CRMV
 
   Veterinarian({
     required this.id,
@@ -25,6 +26,7 @@ class Veterinarian {
     required this.homeService,
     required this.clinicAddress,
     required this.workingHours,
+    required this.crmv, // Adicionar o campo CRMV no construtor
   });
 
   // Método para criar um objeto Veterinarian a partir de um Map (usado ao recuperar dados do Firebase)
@@ -42,6 +44,7 @@ class Veterinarian {
       homeService: data['homeService'] ?? false,
       clinicAddress: data['clinicAddress'] ?? '',
       workingHours: data['workingHours'] ?? '',
+      crmv: data['crmv'] ?? '', // Incluir o campo CRMV aqui
     );
   }
 
@@ -60,6 +63,7 @@ class Veterinarian {
       'homeService': homeService,
       'clinicAddress': clinicAddress,
       'workingHours': workingHours,
+      'crmv': crmv, // Incluir o campo CRMV no método de conversão para mapa
     };
   }
 
@@ -77,6 +81,7 @@ class Veterinarian {
     bool? homeService,
     String? clinicAddress,
     String? workingHours,
+    String? crmv, // Adicionar o campo CRMV no método copyWith
   }) {
     return Veterinarian(
       id: id ?? this.id,
@@ -91,6 +96,7 @@ class Veterinarian {
       homeService: homeService ?? this.homeService,
       clinicAddress: clinicAddress ?? this.clinicAddress,
       workingHours: workingHours ?? this.workingHours,
+      crmv: crmv ?? this.crmv, // Incluir o campo CRMV
     );
   }
 }

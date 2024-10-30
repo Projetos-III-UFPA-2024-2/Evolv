@@ -11,7 +11,13 @@
         android:label="projetoipet"
         android:name="${applicationName}"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Adicione o meta-data do AdMob aqui -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4363860954470928~8034273467"/> <!-- Seu AdMob App ID -->
         
         <activity
             android:name=".MainActivity"

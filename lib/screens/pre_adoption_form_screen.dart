@@ -11,7 +11,6 @@ class PreAdoptionFormScreen extends StatefulWidget {
 class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores para os campos de texto
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -20,14 +19,12 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _neighborhoodController = TextEditingController();
 
-  String specificBreed = 'Não tenho';
+  String specificDogBreed = 'Não tenho';
+  String specificCatBreed = 'Não tenho'; // Campo para raça de gato
   String petPreference = 'Cachorro';
-  String _selectedContactMethod = 'Email'; // Contato por padrão será email
-  String genderPreference = 'Macho'; // Novo campo para preferir macho ou fêmea
-
-  bool isDogPreference() =>
-      petPreference == 'Cachorro' || petPreference == 'Ambos';
-  bool isCatPreference() => petPreference == 'Gato' || petPreference == 'Ambos';
+  String _selectedContactMethod = 'Email';
+  String genderPreference = 'Macho';
+  bool _isSubmitting = false;
 
   final List<String> dogBreeds = [
     'Não tenho',
@@ -65,10 +62,31 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
     'Manx',
   ];
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      final user = FirebaseAuth.instance.currentUser;
+  bool isDogPreference() =>
+      petPreference == 'Cachorro' || petPreference == 'Ambos';
+  bool isCatPreference() => petPreference == 'Gato' || petPreference == 'Ambos';
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _timeAvailableController.dispose();
+    _cityController.dispose();
+    _neighborhoodController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    try {
       await FirebaseFirestore.instance
           .collection('form_responses')
           .doc(user!.uid)
@@ -78,20 +96,19 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
             _selectedContactMethod == 'Telefone' ? _phoneController.text : '',
         'email': _selectedContactMethod == 'Email' ? _emailController.text : '',
         'timeAvailable': _timeAvailableController.text,
-        'specificBreed': specificBreed,
+        'specificDogBreed': specificDogBreed,
+        'specificCatBreed': specificCatBreed,
         'city': _cityController.text,
         'neighborhood': _neighborhoodController.text,
         'petPreference': petPreference,
-        'genderPreference': genderPreference, // Incluindo preferência de gênero
+        'genderPreference': genderPreference,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Informações salvas com sucesso!'),
-        ),
+        SnackBar(content: Text('Informações salvas com sucesso!')),
       );
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => AdoptPetScreen(
@@ -100,6 +117,14 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
           ),
         ),
       );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar as informações.')),
+      );
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
 
@@ -109,7 +134,7 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
       appBar: AppBar(
         title: Text('Formulário de Pré-Adoção'),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple, // Cor do AppBar roxa
+        backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -123,156 +148,60 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon: Icon(Icons.person, color: Colors.deepPurple),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor, insira seu nome';
-                  }
-                  return null;
-                },
-              ),
+              _buildTextField(_nameController, 'Nome', Icons.person,
+                  'Por favor, insira seu nome'),
               SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                value: _selectedContactMethod,
-                items: ['Email', 'Telefone'].map((String method) {
-                  return DropdownMenuItem<String>(
-                    value: method,
-                    child: Text(method),
-                  );
-                }).toList(),
-                onChanged: (value) {
+              _buildDropdown(
+                'Escolha o método de contato',
+                _selectedContactMethod,
+                ['Email', 'Telefone'],
+                Icons.contact_mail,
+                (value) {
                   setState(() {
                     _selectedContactMethod = value!;
                   });
                 },
-                decoration: InputDecoration(
-                  labelText: 'Escolha o método de contato',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon:
-                      Icon(Icons.contact_mail, color: Colors.deepPurple),
-                ),
               ),
               SizedBox(height: 20),
               if (_selectedContactMethod == 'Telefone')
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: InputDecoration(
-                    labelText: 'Telefone',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                    prefixIcon: Icon(Icons.phone, color: Colors.deepPurple),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor, insira seu telefone';
-                    }
-                    return null;
-                  },
+                _buildTextField(
+                  _phoneController,
+                  'Telefone',
+                  Icons.phone,
+                  'Por favor, insira seu telefone',
                 ),
               if (_selectedContactMethod == 'Email')
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'E-mail',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                    prefixIcon: Icon(Icons.email, color: Colors.deepPurple),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor, insira seu e-mail';
-                    }
-                    return null;
-                  },
+                _buildTextField(
+                  _emailController,
+                  'E-mail',
+                  Icons.email,
+                  'Por favor, insira seu e-mail',
                 ),
               SizedBox(height: 20),
-              Text(
-                'Quanto tempo você tem disponível para dedicar ao pet? (Semanal)',
-                style: TextStyle(fontSize: 16),
+              _buildTextField(
+                _timeAvailableController,
+                'Disponibilidade semanal (Ex: 10 horas)',
+                Icons.timer,
+                'Por favor, insira o tempo disponível',
               ),
-              TextFormField(
-                controller: _timeAvailableController,
-                decoration: InputDecoration(
-                  hintText: 'Ex: 10 horas',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon: Icon(Icons.timer, color: Colors.deepPurple),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor, insira o tempo disponível';
-                  }
-                  return null;
+              SizedBox(height: 20),
+              _buildRadioOptions(
+                'Qual tipo de pet você prefere?',
+                ['Cachorro', 'Gato', 'Ambos'],
+                petPreference,
+                (value) {
+                  setState(() {
+                    petPreference = value!;
+                  });
                 },
               ),
               SizedBox(height: 20),
-              Text(
-                'Qual tipo de pet você prefere?',
-                style: TextStyle(fontSize: 16),
-              ),
-              ListTile(
-                title: const Text('Cachorro'),
-                leading: Radio<String>(
-                  value: 'Cachorro',
-                  groupValue: petPreference,
-                  onChanged: (value) {
-                    setState(() {
-                      petPreference = value!;
-                    });
-                  },
-                  activeColor: Colors.deepPurple,
-                ),
-              ),
-              ListTile(
-                title: const Text('Gato'),
-                leading: Radio<String>(
-                  value: 'Gato',
-                  groupValue: petPreference,
-                  onChanged: (value) {
-                    setState(() {
-                      petPreference = value!;
-                    });
-                  },
-                  activeColor: Colors.deepPurple,
-                ),
-              ),
-              ListTile(
-                title: const Text('Ambos'),
-                leading: Radio<String>(
-                  value: 'Ambos',
-                  groupValue: petPreference,
-                  onChanged: (value) {
-                    setState(() {
-                      petPreference = value!;
-                    });
-                  },
-                  activeColor: Colors.deepPurple,
-                ),
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Prefere Macho, Fêmea ou Ambos?',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon: Icon(Icons.pets, color: Colors.deepPurple),
-                ),
-                value: genderPreference,
-                items: ['Macho', 'Fêmea', 'Ambos'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
+              _buildDropdown(
+                'Prefere Macho, Fêmea ou Ambos?',
+                genderPreference,
+                ['Macho', 'Fêmea', 'Ambos'],
+                Icons.pets,
+                (newValue) {
                   setState(() {
                     genderPreference = newValue!;
                   });
@@ -280,120 +209,127 @@ class _PreAdoptionFormScreenState extends State<PreAdoptionFormScreen> {
               ),
               SizedBox(height: 20),
               if (isDogPreference())
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Procura alguma raça de cachorro específica?',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                  ),
-                  value: specificBreed,
-                  items: dogBreeds.map((breed) {
-                    return DropdownMenuItem<String>(
-                      value: breed,
-                      child: Text(breed),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
+                _buildDropdown(
+                  'Raça de cachorro específica?',
+                  specificDogBreed,
+                  dogBreeds,
+                  Icons.pets,
+                  (value) {
                     setState(() {
-                      specificBreed = value!;
+                      specificDogBreed = value!;
                     });
                   },
                 ),
-              if (specificBreed == 'Outro' && isDogPreference())
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Digite a raça do cachorro',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                  ),
-                  onSaved: (value) {
-                    specificBreed = value!;
-                  },
-                ),
+              SizedBox(height: 20), // Adiciona espaçamento entre os campos
               if (isCatPreference())
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Procura alguma raça de gato específica?',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                  ),
-                  value: specificBreed,
-                  items: catBreeds.map((breed) {
-                    return DropdownMenuItem<String>(
-                      value: breed,
-                      child: Text(breed),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
+                _buildDropdown(
+                  'Raça de gato específica?',
+                  specificCatBreed,
+                  catBreeds,
+                  Icons.pets,
+                  (value) {
                     setState(() {
-                      specificBreed = value!;
+                      specificCatBreed = value!;
                     });
-                  },
-                ),
-              if (specificBreed == 'Outro' && isCatPreference())
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Digite a raça do gato',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.0)),
-                  ),
-                  onSaved: (value) {
-                    specificBreed = value!;
                   },
                 ),
               SizedBox(height: 20),
-              TextFormField(
-                controller: _cityController,
-                decoration: InputDecoration(
-                  labelText: 'Cidade',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon:
-                      Icon(Icons.location_city, color: Colors.deepPurple),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor, insira sua cidade';
-                  }
-                  return null;
-                },
+              _buildTextField(
+                _cityController,
+                'Cidade',
+                Icons.location_city,
+                'Por favor, insira sua cidade',
               ),
               SizedBox(height: 20),
-              TextFormField(
-                controller: _neighborhoodController,
-                decoration: InputDecoration(
-                  labelText: 'Bairro',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0)),
-                  prefixIcon: Icon(Icons.location_on, color: Colors.deepPurple),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor, insira seu bairro';
-                  }
-                  return null;
-                },
+              _buildTextField(
+                _neighborhoodController,
+                'Bairro',
+                Icons.location_on,
+                'Por favor, insira seu bairro',
               ),
               SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  backgroundColor: Colors.deepPurple.shade700,
-                  foregroundColor: Colors.white, // Botão roxo
-                ),
-                child: Text(
-                  'Concluir formulário',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
+              _isSubmitting
+                  ? Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        backgroundColor: Colors.deepPurple.shade700,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        'Concluir formulário',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  // Método para construir campos de texto
+  Widget _buildTextField(TextEditingController controller, String label,
+      IconData icon, String validationMessage) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+        prefixIcon: Icon(icon, color: Colors.deepPurple),
+      ),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return validationMessage;
+        }
+        return null;
+      },
+    );
+  }
+
+  // Método para construir Dropdowns
+  Widget _buildDropdown(String label, String currentValue, List<String> items,
+      IconData icon, ValueChanged<String?> onChanged) {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+        prefixIcon: Icon(icon, color: Colors.deepPurple),
+      ),
+      value: currentValue,
+      items: items.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: onChanged,
+    );
+  }
+
+  // Método para construir opções de rádio
+  Widget _buildRadioOptions(String title, List<String> options,
+      String groupValue, ValueChanged<String?> onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TextStyle(fontSize: 16)),
+        ...options.map((option) {
+          return ListTile(
+            title: Text(option),
+            leading: Radio<String>(
+              value: option,
+              groupValue: groupValue,
+              onChanged: onChanged,
+              activeColor: Colors.deepPurple,
+            ),
+          );
+        }).toList(),
+      ],
     );
   }
 }
